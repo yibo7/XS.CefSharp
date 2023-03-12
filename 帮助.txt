@@ -1,0 +1,35 @@
+参考教程:http://bbs.ebsite.net/12a748b0c.html
+
+
+一.默认只将控件拖到界面是不处理不可编辑的状态
+
+二.要启用控件可编辑有两种方法
+  1.Program 的Main方法中，设置(这个配件有左键菜单):
+    HtmlEditorDesignModeManager.IsDesignMode = false;
+  2.在使用控件界面的后台代码中设置(这个配置并没有右键菜单)
+		//获取控件对象:
+    HtmlEditControl HtmlEditControl1
+        {
+            get
+            {
+                return htmlEditUserControl1.HtmlEditControl;
+            }
+        }
+		//窗体的Shown事件
+		private void TestForm_Shown(object sender, EventArgs e)
+        {
+            var configuration = new HtmlEditControlConfiguration
+            {
+                AllowEmbeddedImages = true,//允许嵌入图片
+                AllowFontChange = true,
+                AllowPrint = true
+            };
+            HtmlEditControl1.IsWebBrowserContextMenuEnabled = true;
+            HtmlEditControl1.Configure(configuration); ;
+            HtmlEditControl1.SetDocumentText("<p></p>", @"C:\", true);
+        }
+
+
+三.必须对控件的DocumentText赋值，才能获取HTML的内容，否则在控件中输入内容后，通过代码获取到的DocumentText是空的。
+   所以我们一般会在窗体的构造方法里这样设置一下:
+   HtmlEditControl1.DocumentText = "";
